@@ -6,19 +6,27 @@ Plug 'tpope/vim-sensible'
 Plug 'junegunn/seoul256.vim'
 " 定义插件，默认用法，和 Vundle 的语法差不多
 Plug 'junegunn/vim-easy-align'
-Plug 'skywind3000/quickmenu.vim'
+"Plug 'skywind3000/quickmenu.vim'
 Plug 'ludovicchabant/vim-gutentags' 
 "plug 'dense-analysis/ale'
 " 延迟按需加载，使用到命令的时候再加载或者打开对应文件类型才加载
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
+"Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
 
 " 确定插件仓库中的分支或者 tag
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
-Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
+"Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
 
+Plug 'justinmk/vim-sneak'
+
+" 补全工具
+Plug '~/.vim/plugged/YouCompleteMe'
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
+
+" load sensible earlier, add the following line to override
+runtime! plugin/sensible.vim
+
 set nocompatible              " be iMproved, required
 filetype on                  " required
 
@@ -31,12 +39,12 @@ set background=dark
 "set background=light
 
 set number
-"set incsearch
+set incsearch
 set ignorecase
 set hlsearch
-"set ts=4
+set ts=4
 set autoindent
-"set encoding=utf-8	  "使用utf-8编码 
+set encoding=utf-8	  "使用utf-8编码 
 
 set cursorline
 set cursorcolumn
@@ -54,11 +62,21 @@ set smartindent " 开启新行时使用智能自动缩进
 set cmdheight=1 " 设定命令行的行数为 1
 set laststatus=2 " 显示状态栏 (默认值为 1, 无法显示状态栏)
 set statusline=\ %<%F[%1*%M%*%n%R%H]%=\ %y\ %0(%{&fileformat}\ %{&encoding}\ Ln\ %l,\ Col\ %c/%L%) " 设置在状态行显示的信息
-set foldenable " 开始折叠
+"set foldenable " 开始折叠
+set foldlevelstart=99
 set foldmethod=syntax " 设置语法折叠
 set foldcolumn=0 " 设置折叠区域的宽度
 setlocal foldlevel=1 " 设置折叠层数为 1
 nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR> " 用空格键来开关折叠
+
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+
+" sneak replace f with Sneak
+map f <Plug>Sneak_s
+map F <Plug>Sneak_S
 
 "NERDTree settings
 noremap <F7> :NERDTreeToggle<CR>
@@ -133,21 +151,60 @@ noremap <F8> :TlistToggle<CR>
 "更新ctags标签文件快捷键设置
 noremap <F6> :!ctags -R<CR>
 
-let g:ycm_add_preview_to_completeopt = 0
-let g:ycm_show_diagnostics_ui = 0
-let g:ycm_server_log_level = 'info'
-let g:ycm_min_num_identifier_candidate_chars = 2
+
+
+" YouCompleteMe
+" Python Semantic Completion
+let g:ycm_python_binary_path = '/usr/bin/python3'
+" C family Completion Path
+let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+
+" 跳转快捷键
+nnoremap <c-k> :YcmCompleter GoToDeclaration<CR>|
+nnoremap <c-j> :YcmCompleter GoToDefinition<CR>|
+nnoremap <c-h> :YcmCompleter GoToDefinitionElseDeclaration<CR>|
+
+" 停止提示是否载入本地ycm_extra_conf文件
+let g:ycm_confirm_extra_conf = 0
+
+" 语法关键字补全
+let g:ycm_seed_identifiers_with_syntax = 1
+
+" 取消默认打开的语法检查
+"let g:ycm_show_diagnostics_ui = 0
+
+" 开启 YCM 基于标签引擎
+let g:ycm_collect_identifiers_from_tags_files = 1
+
+" 从第2个键入字符就开始罗列匹配项
+let g:ycm_min_num_of_chars_for_completion=2
+
+" 在注释输入中也能补全
+let g:ycm_complete_in_comments = 1
+" 在字符串输入中也能补全
+let g:ycm_complete_in_strings = 1
+" 注释和字符串中的文字也会被收入补全
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
-let g:ycm_complete_in_strings=1
-let g:ycm_key_invoke_completion = '<c-z>'
-set completeopt=menu,menuone
 
-noremap <c-z> <NOP>
+" 弹出列表时选择第1项的快捷键(默认为<TAB>和<Down>)
+"let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
+" 弹出列表时选择前1项的快捷键(默认为<S-TAB>和<UP>)
+let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
 
+" 主动补全, 默认为<C-Space>
+"let g:ycm_key_invoke_completion = ['<C-Space>']
+" 停止显示补全列表(防止列表影响视野), 可以按<C-Space>重新弹出
+"let g:ycm_key_list_stop_completion = ['<C-y>']
 let g:ycm_semantic_triggers =  {
-			\ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
-			\ 'cs,lua,javascript': ['re!\w{2}'],
-			\ }
+\   'c,cpp,python,java,go,erlang,perl':['re!\w{2}'],
+\   'cs,lua,javascript':['re!\w{2}'],
+\}
+"ycm默认需要按ctrl + space 来进行补全，可以在上面的花括号里面加入下面两行代码来直接进行补全[不需要按键]
+
+"关闭函数原型提示
+set completeopt=menu,menuone
+let g:ycm_add_preview_to_completeopt = 0
+
 
 let g:ale_linters_explicit = 1
 let g:ale_completion_delay = 500

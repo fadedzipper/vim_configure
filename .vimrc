@@ -3,12 +3,19 @@ call plug#begin('~/.vim/plugged')
 
 " Declare the list of plugins.
 Plug 'tpope/vim-sensible'
+
 Plug 'junegunn/seoul256.vim'
+Plug 'scwood/vim-hybrid'
+
 " 定义插件，默认用法，和 Vundle 的语法差不多
 Plug 'junegunn/vim-easy-align'
+
 "Plug 'skywind3000/quickmenu.vim'
 Plug 'ludovicchabant/vim-gutentags' 
-"plug 'dense-analysis/ale'
+
+" inspect engine
+Plug 'https://gitee.com/fadedzipper/ale'
+
 " 延迟按需加载，使用到命令的时候再加载或者打开对应文件类型才加载
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 "Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
@@ -21,6 +28,16 @@ Plug 'justinmk/vim-sneak'
 
 " 补全工具
 Plug '~/.vim/plugged/YouCompleteMe'
+
+" surround
+Plug 'tpope/vim-surround'
+
+" 注释
+Plug 'tpope/vim-commentary'
+
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
 
@@ -30,13 +47,20 @@ runtime! plugin/sensible.vim
 set nocompatible              " be iMproved, required
 filetype on                  " required
 
-"if !has("gui_running")
-"	set t_Co=256
-"endif
-"colorscheme khaki
-colo seoul256
-set background=dark
-"set background=light
+" if !has("gui_running")
+" 	set t_Co=256
+" endif
+colorscheme khaki
+"colo seoul256
+"colorscheme hybrid
+"set background=dark
+set background=light
+syntax on
+
+" configure <leader> 快速切换buffer
+let mapleader = ","
+nnoremap <leader>q :bp<CR>
+nnoremap <leader>e :bn<CR>
 
 set number
 set incsearch
@@ -106,6 +130,19 @@ call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
 "set tags=./.tags;,.tags
 set autochdir
 
+
+" Automatically displays all buffers when there's only one tab open.
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#tab_nr_type = 1 " tab number
+let g:airline#extensions#tabline#show_tab_nr = 1
+let g:airline#extensions#tabline#formatter = 'default'
+let g:airline#extensions#tabline#buffer_nr_show = 0
+let g:airline#extensions#tabline#fnametruncate = 16
+let g:airline#extensions#tabline#fnamecollapse = 2
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+
+
+
 " gutentags 搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归
 let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
 
@@ -160,9 +197,9 @@ let g:ycm_python_binary_path = '/usr/bin/python3'
 let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 
 " 跳转快捷键
-nnoremap <c-k> :YcmCompleter GoToDeclaration<CR>|
-nnoremap <c-j> :YcmCompleter GoToDefinition<CR>|
-nnoremap <c-h> :YcmCompleter GoToDefinitionElseDeclaration<CR>|
+"nnoremap <c-k> :YcmCompleter GoToDeclaration<CR>|
+"nnoremap <c-j> :YcmCompleter GoToDefinition<CR>|
+"nnoremap <c-h> :YcmCompleter GoToDefinitionElseDeclaration<CR>|
 
 " 停止提示是否载入本地ycm_extra_conf文件
 let g:ycm_confirm_extra_conf = 0
@@ -171,7 +208,10 @@ let g:ycm_confirm_extra_conf = 0
 let g:ycm_seed_identifiers_with_syntax = 1
 
 " 取消默认打开的语法检查
-"let g:ycm_show_diagnostics_ui = 0
+let g:ycm_enable_diagnostic_signs = 0
+let g:ycm_enable_diagnostic_highlighting = 0
+let g:ycm_show_diagnostics_ui = 0
+let g:ycm_echo_current_diagnostic = 0
 
 " 开启 YCM 基于标签引擎
 let g:ycm_collect_identifiers_from_tags_files = 1
@@ -206,21 +246,25 @@ set completeopt=menu,menuone
 let g:ycm_add_preview_to_completeopt = 0
 
 
-let g:ale_linters_explicit = 1
-let g:ale_completion_delay = 500
-let g:ale_echo_delay = 20
-let g:ale_lint_delay = 500
+" 检错插件ale
+" let g:ale_completion_delay = 500
+" let g:ale_echo_delay = 20
+" let g:ale_lint_delay = 500
 let g:ale_echo_msg_format = '[%linter%] %code: %%s'
 let g:ale_lint_on_text_changed = 'normal'
 let g:ale_lint_on_insert_leave = 1
 let g:airline#extensions#ale#enabled = 1
+let g:ale_sign_column_always = 1
 
 let g:ale_c_gcc_options = '-Wall -O2 -std=c99'
 let g:ale_cpp_gcc_options = '-Wall -O2 -std=c++14'
 let g:ale_c_cppcheck_options = ''
 let g:ale_cpp_cppcheck_options = ''
 
-let g:ale_sign_error = "\ue009\ue009"
+let g:ale_sign_error = '✗'
+let g:ale_sign_warning = '⚡'
+let g:ale_statusline_format = ['✗ %d', '⚡ %d', '✔ OK']
+
 hi! clear SpellBad
 hi! clear SpellCap
 hi! clear SpellRare
@@ -228,3 +272,10 @@ hi! SpellBad gui=undercurl guisp=red
 hi! SpellCap gui=undercurl guisp=blue
 hi! SpellRare gui=undercurl guisp=magenta
 
+"前、后一个错误或警告
+nmap sp <Plug>(ale_previous_wrap)
+nmap sn <Plug>(ale_next_wrap)
+"开启／关闭语法检查
+nmap <Leader>s :ALEToggle<CR>
+"查看详细信息
+nmap <Leader>d :ALEDetail<CR>

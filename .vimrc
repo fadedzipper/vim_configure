@@ -103,9 +103,17 @@ map f <Plug>Sneak_s
 map F <Plug>Sneak_S
 
 "NERDTree settings
+set mouse=a
 noremap <F7> :NERDTreeToggle<CR>
+let NERDTreeShowBookmarks=1 "显示书签
+let NERDTreeMinimalUI=1 "不显示帮助面板
+let NERDTreeDirArrows=1 "目录箭头 1 显示箭头 0传统+-|号
+let g:NERDTreeWinSize=25
+map <leader>t :NERDTreeFind<CR>
+
 autocmd vimenter * NERDTree
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
 " NERDTress File highlighting
 function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
  exec 'autocmd filetype nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
@@ -197,9 +205,9 @@ let g:ycm_python_binary_path = '/usr/bin/python3'
 let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 
 " 跳转快捷键
-"nnoremap <c-k> :YcmCompleter GoToDeclaration<CR>|
-"nnoremap <c-j> :YcmCompleter GoToDefinition<CR>|
-"nnoremap <c-h> :YcmCompleter GoToDefinitionElseDeclaration<CR>|
+nnoremap <c-k> :YcmCompleter GoToDeclaration<CR>|
+nnoremap <c-j> :YcmCompleter GoToDefinition<CR>|
+nnoremap <c-h> :YcmCompleter GoToDefinitionElseDeclaration<CR>|
 
 " 停止提示是否载入本地ycm_extra_conf文件
 let g:ycm_confirm_extra_conf = 0

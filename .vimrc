@@ -33,13 +33,15 @@ Plug '~/.vim/plugged/YouCompleteMe'
 Plug 'tpope/vim-surround'
 
 " 注释
-Plug 'tpope/vim-commentary'
+Plug 'https://gitee.com/fadedzipper/vim-commentary' 
 
-Plug 'vim-airline/vim-airline'
+Plug 'https://gitee.com/fadedzipper/vim-airline' 
 Plug 'vim-airline/vim-airline-themes'
 
+Plug 'https://gitee.com/fadedzipper/vim-localvimrc' 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
+'
 
 " load sensible earlier, add the following line to override
 runtime! plugin/sensible.vim
@@ -47,9 +49,9 @@ runtime! plugin/sensible.vim
 set nocompatible              " be iMproved, required
 filetype on                  " required
 
-" if !has("gui_running")
-" 	set t_Co=256
-" endif
+if !has("gui_running")
+	set t_Co=256
+endif
 colorscheme khaki
 "colo seoul256
 "colorscheme hybrid
@@ -92,6 +94,14 @@ set foldmethod=syntax " 设置语法折叠
 set foldcolumn=0 " 设置折叠区域的宽度
 setlocal foldlevel=1 " 设置折叠层数为 1
 nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR> " 用空格键来开关折叠
+
+
+" localvim configure
+let g:localvimrc_enable=1
+" let g:localvimrc_ask=0
+let g:localvimrc_sandbox=0
+
+
 
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 xmap ga <Plug>(EasyAlign)
@@ -202,7 +212,7 @@ noremap <F6> :!ctags -R<CR>
 " Python Semantic Completion
 let g:ycm_python_binary_path = '/usr/bin/python3'
 " C family Completion Path
-let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+let g:ycm_global_ycm_extra_conf='~/.vim/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 
 " 跳转快捷键
 nnoremap <c-k> :YcmCompleter GoToDeclaration<CR>|
@@ -263,6 +273,8 @@ let g:ale_lint_on_text_changed = 'normal'
 let g:ale_lint_on_insert_leave = 1
 let g:airline#extensions#ale#enabled = 1
 let g:ale_sign_column_always = 1
+" find Makefile and execute make -n for cflags, default=0
+" let g:ale_c_parse_makefile=1
 
 let g:ale_c_gcc_options = '-Wall -O2 -std=c99'
 let g:ale_cpp_gcc_options = '-Wall -O2 -std=c++14'
@@ -270,8 +282,8 @@ let g:ale_c_cppcheck_options = ''
 let g:ale_cpp_cppcheck_options = ''
 
 let g:ale_sign_error = '✗'
-let g:ale_sign_warning = '⚡'
-let g:ale_statusline_format = ['✗ %d', '⚡ %d', '✔ OK']
+let g:ale_sign_warning = '!'
+let g:ale_statusline_format = ['✗ %d', '! %d', '✔ OK']
 
 hi! clear SpellBad
 hi! clear SpellCap

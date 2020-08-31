@@ -18,8 +18,7 @@ Plug 'https://gitee.com/fadedzipper/ale'
 
 " 延迟按需加载，使用到命令的时候再加载或者打开对应文件类型才加载
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-"Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
-
+"Plug 'tpope/vim-fireplace', { 'for': 'clojure' } 
 " 确定插件仓库中的分支或者 tag
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
 "Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
@@ -49,14 +48,14 @@ runtime! plugin/sensible.vim
 set nocompatible              " be iMproved, required
 filetype on                  " required
 
-if !has("gui_running")
-	set t_Co=256
-endif
-colorscheme khaki
-"colo seoul256
-"colorscheme hybrid
-"set background=dark
-set background=light
+" if !has("gui_running")
+" 	set t_Co=256
+" endif
+" colorscheme khaki
+ colo seoul256
+" colorscheme hybrid
+set background=dark
+" set background=light
 syntax on
 
 " configure <leader> 快速切换buffer
@@ -98,7 +97,7 @@ nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR> " 用空格�
 
 " localvim configure
 let g:localvimrc_enable=1
-" let g:localvimrc_ask=0
+let g:localvimrc_ask=0
 let g:localvimrc_sandbox=0
 
 
@@ -230,6 +229,9 @@ let g:ycm_enable_diagnostic_signs = 0
 let g:ycm_enable_diagnostic_highlighting = 0
 let g:ycm_show_diagnostics_ui = 0
 let g:ycm_echo_current_diagnostic = 0
+" 检查是否真正的关闭ycm的语法检查
+let g:ycm_error_symbol = 'K'
+let g:ycm_warning_symbol = 'O'
 
 " 开启 YCM 基于标签引擎
 let g:ycm_collect_identifiers_from_tags_files = 1
@@ -250,9 +252,9 @@ let g:ycm_collect_identifiers_from_comments_and_strings = 1
 let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
 
 " 主动补全, 默认为<C-Space>
-"let g:ycm_key_invoke_completion = ['<C-Space>']
+let g:ycm_key_invoke_completion = '<c-l>'
 " 停止显示补全列表(防止列表影响视野), 可以按<C-Space>重新弹出
-"let g:ycm_key_list_stop_completion = ['<C-y>']
+let g:ycm_key_list_stop_completion = ['<C-y>']
 let g:ycm_semantic_triggers =  {
 \   'c,cpp,python,java,go,erlang,perl':['re!\w{2}'],
 \   'cs,lua,javascript':['re!\w{2}'],
